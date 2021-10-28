@@ -45,3 +45,12 @@ echo Carbon::now()->subMinutes(2)->diffForHumans(); // '2 minutes ago'
 
 // Want to know more about diffForHumans? Double-click on the method name!
 <!--  -->
+
+
+
+
+<!-- ======================== for png image design start-->
+<img src="   {{ asset('backend/images/classy_new.png') }}" alt="logo" style="height: 60px; width: 240px; filter:invert(101%) sepia(49%) saturate(1191%) hue-rotate(262deg) brightness(150%) contrast(141%);">
+<!-- ================================== end png image design part-->
+
+
