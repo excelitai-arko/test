@@ -54,3 +54,104 @@ echo Carbon::now()->subMinutes(2)->diffForHumans(); // '2 minutes ago'
 <!-- ================================== end png image design part-->
 
 
+
+<!-- ============================start=======================================three table joining with eloquent model start===========================================================================================================-->
+<!-- for joining table we set foreign key(state_id) in city table which  key is  primary key in (state) table -->
+<!-- for joining table we set foreign key(country_id) in (state) table which  key is  primary key in (country) table -->
+
+table 1:city   (col1 (city_id)->primary_key, col2(state_id)->foreign_key,col3(city_name))
+
+table 2:state   (col1 (state_id)->primary_key, col2(country_id)->foreign_key,col3(state_name))
+
+
+table 3:country (col1 (country_id)->primary_key, col2(country_name))
+<!-- ==================now we will get data from country table -->
+
+<!-- ====model name==(county.php) -->
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Country extends Model
+{
+    use HasFactory;
+    protected $table = 'country';
+    protected $fillable = ['country_name'];
+
+}
+
+<!--  ==========end model code-->
+<!--  ==========start Controller code===(JointableController)-->
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Country;
+
+class JointableController extends Controller
+{
+public function index()
+  {
+   //three table ( city, state,country,) joining code and get data from Country model
+
+  $data = Country::join('state','state.country_id', '=', 'country.country_id')
+                   ->('city','city.state_id', '=', 'state.state_id')
+                   ->get(['country.country_name', 'state.state_name', 'city.city_name']);
+return view ('join_table', compact('data'));
+
+<!-- === ->get(['country.country_name', 'state.state_name', 'city.city_name']);  geting 3 column valu from 3 table with join == -->
+<!--  ========= $data = Country::join('state','state.country_id', '=', 'country.country_id')  //this code join country table and state table here (state(table_name).country_id(foreign_key)) = (country(table_name).country_id(primary_key))========= -->
+
+<!-- =======   ->('city','city.state_id', '=', 'state.state_id')  //this code join state table and city table here (city(table_name).state_id(foreign_key)) = (state(table_name).state_id(primary_key))======= -->
+                
+  }
+}
+<!--  ==========end Controller code-->
+
+<!-- ========start view page===name ===join_table.blade.php === -->
+  <table>
+<thead>
+<tr>
+<th>country<th>
+<th>state<th>
+<th>city<th>
+
+</tr>
+<tbody>
+
+@foreach($data as $row)
+<tr>
+<td>{{$row->country_name}}</td>
+<td>{{$row->state_name}}</td>
+<td>{{$row->city_name}}</td>
+
+</tr>
+@endforeach
+</tbody>
+
+
+</thead>
+
+</table>
+<!-- ========end view page===name ===join_table.blade.php === -->
+
+<!-- =======start route code for view=== web.php=== -->
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JointableController
+
+Route::get('join_tabel',[JointableController::class, 'index']);
+
+<!-- =======end route code for view=== web.php=== -->
+
+
+
+
+<!--==============================End=================================== three table joining with eloquent model and get data from country model==================================================================================================================-->
+
