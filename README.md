@@ -1,7 +1,7 @@
 <!-- ====================== -->
 data-expire="{{Carbon\Carbon::parse($sale->sale_date)->format( 'Y/m/d h:m:s')}}"
 <!-- ======= -->
-distint working procedure
+
 <!-- ============for product cont condition -->
 @if($product->count()>0 && $sale->status ==1 && $sale->sale_date > Carbon\Carbon::now())
 
@@ -20,7 +20,7 @@ $onsale=Order::select('products.*','brands.brand_name_cats_eye')->where('orders.
 <!--=================================================================================  -->
 
 
-<!-- for date function -->
+<!-- ============================================for date function -->
 printf("Right now is %s", Carbon::now()->toDateTimeString());
 printf("Right now in Vancouver is %s", Carbon::now('America/Vancouver')); // automatically converted to string
 $tomorrow = Carbon::now()->addDay();
@@ -44,7 +44,7 @@ if (Carbon::now()->isWeekend()) {
 echo Carbon::now()->subMinutes(2)->diffForHumans(); // '2 minutes ago'
 
 // Want to know more about diffForHumans? Double-click on the method name!
-<!--  -->
+<!-- =========================================================== -->
 
 
 
