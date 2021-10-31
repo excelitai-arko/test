@@ -155,8 +155,9 @@ Route::get('join_tabel',[JointableController::class, 'index']);
 
 <!--==============================End=================================== three table joining with eloquent model and get data from country model==================================================================================================================-->
 <!-- ==========for auto select district problem solve========= -->
-<?php
+
 <script>
+<?php
 $('.minus').click(function(){
 if ($('#quantity').val() != 0)
 $('#quantity' ).val(parseInt($('#quantity').val()) - 1);
@@ -227,6 +228,7 @@ $('#quantity').val(parseInt($('#quantity').val()) + 1);
             }
         });
   });
-</script>
 ?>
+</script>
+
 <!-- ===========end auto select district in master blade=========== -->
