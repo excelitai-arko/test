@@ -154,4 +154,77 @@ Route::get('join_tabel',[JointableController::class, 'index']);
 
 
 <!--==============================End=================================== three table joining with eloquent model and get data from country model==================================================================================================================-->
-
+<!-- ==========for auto select district problem solve========= -->
+<script>
+$('.minus').click(function(){
+if ($('#quantity').val() != 0)
+$('#quantity' ).val(parseInt($('#quantity').val()) - 1);
+});
+$('.plus').click(function(){
+$('#quantity').val(parseInt($('#quantity').val()) + 1);
+});
+</script>
+{{-- select discrict and state --}}
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('select[name="division_id"]').on('change', function(){
+          var division_id = $(this).val();
+          if(division_id) {
+              $.ajax({
+                  url: "{{  url('/district-get/ajax') }}/"+division_id,
+                  type:"GET",
+                  dataType:"json",
+                  success:function(data) {
+                    $('select[name="state_id"]').empty();
+                    $('select[name="district_id"]').empty();
+                    console.log(data);
+                    document.querySelector('#option_district_id .nice-select ul.list').innerHTML="";
+                    let nice_select = $('select[name="district_id"] .nice-select')
+                    let spanCurrent   = document.querySelector('#option_district_id .nice-select span.current');
+                    let list          = document.querySelector('#option_district_id .nice-select ul.list');
+                    spanCurrent.innerHTML = data[0].district_name;
+                    $.each(data, function(key, value){
+                        let liItem  = document.createElement('li');
+                        liItem.setAttribute('data-value',value.id);
+                        liItem.classList.add('option');
+                        liItem.innerHTML=value.district_name;
+                        list.append(liItem);
+                        $('select[name="district_id"]').append('<option value="'+ value.id +'">' + value.district_name + '</option>');
+                    });
+                  },
+              });
+          } else {
+              alert('danger');
+          }
+      });
+      $('select[name="district_id"]').on('change', function(){
+            var district_id = $(this).val();
+            if(district_id) {
+                $.ajax({
+                    url: "{{  url('/state-get/ajax') }}/"+district_id,
+                    type:"GET",
+                    dataType:"json",
+                    success:function(data) {
+                       var d =$('select[name="state_id"]').empty();
+                       document.querySelector('#option_state_id .nice-select ul.list').innerHTML="";
+                        let nice_select = $('select[name="district_id"] .nice-select')
+                        let spanCurrent   = document.querySelector('#option_state_id .nice-select span.current');
+                        let list          = document.querySelector('#option_state_id .nice-select ul.list');
+                        spanCurrent.innerHTML = data[0].state_name;
+                          $.each(data, function(key, value){
+                            let liItem  = document.createElement('li');
+                            liItem.setAttribute('data-value',value.id);
+                            liItem.classList.add('option');
+                            liItem.innerHTML=value.state_name;
+                            list.append(liItem);
+                              $('select[name="state_id"]').append('<option value="'+ value.id +'">' + value.state_name + '</option>');
+                          });
+                    },
+                });
+            } else {
+                alert('danger');
+            }
+        });
+  });
+</script>
+<!-- ===========end auto select district in master blade=========== -->
