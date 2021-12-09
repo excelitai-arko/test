@@ -232,3 +232,95 @@ $('#quantity').val(parseInt($('#quantity').val()) + 1);
 </script>
 
 <!-- ===========end auto select district in master blade=========== -->
+  
+<!-- =========================v-for============================== -->
+ <div class="form-group">
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                 <label for="exampleFormControlSelect1">Product Category</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" v-model="form.category_id">
+                                                <option :value="category.id" :key="category.id" v-for="category in categories">{{category.category_name}}</option>
+
+                                            </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                    <label for="exampleFormControlSelect1">Product Supplier</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" v-model="form.supplier_id">
+                                                <option :value="supplier.id" :key="index" v-for="(supplier,index) in suppliers">{{supplier.name}}</option>
+
+                                            </select>
+                                            </div>
+                                        </div>
+                                    </div>
+<!-- =========================v-for==end============================ -->
+
+<!-- ===============good paractice create function inside methods and call it out of method in created or mounted =============== -->
+
+<script type="text/javascript">
+export default {
+    created() {
+        if (!User.loggedIn()) {
+            this.$router.push({ name: "/" });
+        }
+    },
+
+    data() {
+        return {
+            form: {
+                product_name: null,
+                product_code: null,
+                category_id: null,
+                supplier_id: null,
+                root: null,
+                buying_price: null,
+                selling_price: null,
+                buying_date: null,
+                image: null,
+                product_quantity: null,
+            },
+            errors: {},
+            categories : {},
+            suppliers : {},
+        }
+    },
+    methods: {
+        onFileSelected(event){
+            let file = event.target.files[0];
+            if(file.size > 1048770){
+                Notification.image_validation()
+            }else{
+                let reader = new FileReader();
+                reader.onload = event =>{
+                    this.form.image = event.target.result
+                    console.log(event.target.result);
+                };
+            reader.readAsDataURL(file);
+            }
+
+        },
+        employeeInsert(){
+            axios.post('/api/employee', this.form)
+            .then(() => {
+                this.$router.push({ name: 'employee'})
+                Notification.success()
+            })
+            .catch(error=>this.errors = error.response.data.errors)
+        },
+        getCategories(){
+            axios.get('api/category/')
+               .then(({data}) => (this.categories = data))
+        },
+        getSupplier(){
+          axios.get('api/supplier/')
+            .then(({data}) => (this.suppliers = data))
+        }
+    },
+    created(){
+       this.getCategories();
+       this.getSupplier();
+    },
+}
+</script>
+
+
+<!-- ===============good paractice create function inside methods and call it out of method in created or mounted =============== -->
