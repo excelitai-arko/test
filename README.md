@@ -349,4 +349,5 @@ public function create_discussion(Request $request){
 
 
 <!-- ==============auth user name insert by controller end================ -->
-
+loop er modde id pass korle delet er somoi delete(`api/delete/${id}`)
+delete button e click korle id ta auto generate..hide contents
