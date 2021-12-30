@@ -480,4 +480,7 @@ class MessageController extends Controller
 
 
 <=====================message controller end===============================>
+<=================start========>
+strip_tags($request->description) use for remove tag from texeditor table.
+<=================start end========>
 
