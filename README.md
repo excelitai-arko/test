@@ -382,3 +382,102 @@ else
 <!-- ==============auth user name insert by controller end================ -->
 loop er modde id pass korle delet er somoi delete(`api/delete/${id}`)
 delete button e click korle id ta auto generate..hide contents
+<=====================message controller===============================>
+use App\Models\Message;
+use Carbon\Carbon;
+use DateTime;
+use DateTimeZone;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+class MessageController extends Controller
+{
+    public function SendMessageView(){
+        $sender_name=$this->findUser();
+        $messages= Message::where('sender_name',$sender_name)->get();
+        //$messages= Message::where('sender_name','super admin')->get();
+        //$messages= Message::where('sender_name','Doctor')->get();
+        return view('super_admin.messages.send', compact('messages'));
+    }
+    public function InboxMessageView(){
+        $sender_name=$this->findUser();
+        $messages= Message::where('send_to', $sender_name)->get();
+       // $messages= Message::where('send_to','Super-Admin')->get();
+        //$messages= Message::where('send_to', 'Doctor')->get();
+        return view('super_admin.messages.inbox', compact('messages'));
+    }
+    public function ShowSingleSentMessage($id){
+        $message= Message::find($id);
+        return response()->json(compact('message'));
+    }
+    public function ShowSingleInboxMessage($id){
+        $message= Message::find($id);
+        return response()->json(compact('message'));
+    }
+    public function SendMessageStore(Request $request){
+        $validator = Validator::make($request->all(), [
+            //'sendto'=> 'required|max:191',
+            'subject'=> 'required|max:191',
+            'message'=> 'required',
+        ],[
+            //'sendto.required' => 'Send To name is required',
+            'subject.required' => 'Subject name is required',
+            'message.required' => 'Message details is required',
+        ]);
+        if($validator->fails())
+        {
+            return response()->json([
+                'status'=>400,
+                'errors'=>$validator->messages(),
+            ]);
+        }
+        else
+        {
+            $message = new Message;
+            if(Auth::guard('admin')->check()){
+                $sender_name = Auth::guard('admin')->user()->name;
+            }elseif(Auth::guard('super_admin')->check()){
+                $sender_name = Auth::guard('super_admin')->user()->name;
+            }elseif(Auth::guard('doctor')->check()){
+                $sender_name = Auth::guard('doctor')->user()->name;
+            }else{
+                $sender_name = Auth::guard('employee')->user()->name;
+            }
+             //dd( $sender_name);
+            $message->send_to = $request->input('sendto');
+            $message->subject = $request->input('subject');
+            $message->message = strip_tags($request->input('message'));
+            $message->sender_name = $sender_name;
+            $message->date = Carbon::now()->format('d-m-Y h:i:s a');
+            $message->save();
+            return response()->json([
+                'status'=>200,
+                'message'=>'Message Send Successfully',
+            ]);
+        }
+    }
+    public function findUser(){
+        if(Auth::guard('admin')->check()){
+            $sender_name = Auth::guard('admin')->user()->name;
+        }elseif(Auth::guard('super_admin')->check()){
+            $sender_name = Auth::guard('super_admin')->user()->name;
+        }elseif(Auth::guard('doctor')->check()){
+            $sender_name = Auth::guard('doctor')->user()->name;
+        }else{
+            $sender_name = Auth::guard('employee')->user()->name;
+        }
+        return $sender_name;
+        // dd($sender_name);
+    }
+    public function SendMessageDelete($id){
+        $message = Message::findOrFail($id);
+      Message::findOrFail($id)->delete();
+      return redirect()->back();
+    }
+}
+// $sender_name=Auth::user();
+// $sender_name=Auth::guard('user')->check();
+
+
+<=====================message controller end===============================>
+
