@@ -348,6 +348,37 @@ public function create_discussion(Request $request){
 
 
 
+or you can use below code
+========
+=========
+else
+        {
+            $message = new Message;
+            if(Auth::guard('admin')->check()){
+                $sender_name = Auth::guard('admin')->user()->name;
+                dd($sender_name);
+            }elseif(Auth::guard('super_admin')->check()){
+                $sender_name = Auth::guard('super_admin')->user()->name;
+            }elseif(Auth::guard('doctor')->check()){
+                $sender_name = Auth::guard('doctor')->user()->name;
+            }else{
+                $sender_name = Auth::guard('employee')->user()->name;
+            }
+             //dd( $sender_name);
+            $message->send_to = $request->input('sendto');
+            $message->subject = $request->input('subject');
+            $message->message = strip_tags($request->input('message'));
+            $message->sender_name = $sender_name;
+            $message->date = Carbon::now()->format('d-m-Y h:i:s a');
+            $message->save();
+            return response()->json([
+                'status'=>200,
+                'message'=>'Message Send Successfully',
+            ]);
+        }
+
+==========================================
+
 <!-- ==============auth user name insert by controller end================ -->
 loop er modde id pass korle delet er somoi delete(`api/delete/${id}`)
 delete button e click korle id ta auto generate..hide contents
