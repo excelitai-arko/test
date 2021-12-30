@@ -324,3 +324,29 @@ export default {
 
 
 <!-- ===============good paractice create function inside methods and call it out of method in created or mounted =============== -->
+<!-- ==============auth user name insert by controller================ -->
+
+public function create_discussion(Request $request){ 
+
+    if(Auth::check()){
+          $create = new ForumPost ; 
+          $create->post_content = $request->content;
+          $create->user_name = Auth::user()->name;
+          $create->comment_frequency = 100;
+          $create->user_id = Auth::user()->id;
+          $create->save();
+
+          return response()->json([
+                'message' => 'Discussion created successfully '
+          ]);
+     } else {
+         return response()->json([
+                'message' => 'You are not authentic user. '
+         ]);
+    }
+}
+
+
+
+<!-- ==============auth user name insert by controller end================ -->
+
