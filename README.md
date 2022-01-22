@@ -1196,4 +1196,18 @@ public function trainingAssignmentUpdate(Request $request, $id){
 }
 <<<==============================employe=====================controller============================add========end========>>>
 
+<!-- db begintransaction for insert multiple data start -->
+DB::beginTransaction();
 
+try {
+    DB::insert(...);
+    DB::insert(...);
+    DB::insert(...);
+
+    DB::commit();
+    // all good
+} catch (\Exception $e) {
+    DB::rollback();
+    // something went wrong
+}
+<!-- db begintransaction for insert multiple data start end  -->
