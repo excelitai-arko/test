@@ -1211,3 +1211,28 @@ try {
     // something went wrong
 }
 <!-- db begintransaction for insert multiple data start end  -->
+
+<!-- =====================for serching code start ================ -->
+
+
+    public function showInvoice(Request $request){
+
+        if($request->keyword != ''){
+        $invoices = Invoice::where('invoice_id','LIKE','%'.$request->keyword.'%')
+        ->orWhere('invoice_id','LIKE','%'.$request->keyword.'%')
+        ->orWhere('payment_received','LIKE','%'.$request->keyword.'%')
+        ->orWhere('payment_due','LIKE','%'.$request->keyword.'%')
+        ->orWhere('billing_date','LIKE','%'.$request->keyword.'%')
+        ->orWhere('due_date','LIKE','%'.$request->keyword.'%')
+        ->orWhere('note','LIKE','%'.$request->keyword.'%')
+        ->orWhere('status','LIKE','%'.$request->keyword.'%')
+        ->get();
+        }
+        return response()->json([
+           'invoices' => $invoices
+        ]);
+
+
+    }
+
+<!--================================for searching code end=======================  -->
